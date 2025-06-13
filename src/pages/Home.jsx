@@ -7,6 +7,7 @@ const Home = () => {
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [image, setImage] = useState()
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const stored = localStorage.getItem("recipes")
@@ -14,7 +15,13 @@ const Home = () => {
             setRecipes(JSON.parse(stored))
     }, [])
 
-    const addRecipe = () => {
+    const addRecipe = (e) => {
+        e.preventDefault();
+        if (!title || !description || !image) {
+            setError('All fields are required.');
+            return;
+        }
+        setError('');
         const newRecipe = {
             id: Date.now(),
             title,
@@ -42,15 +49,15 @@ const Home = () => {
                 <Form>
                     <Form.Group className='mb-3'>
                         <Form.Label>Recipe Title</Form.Label>
-                        <Form.Control value={title} onChange={(e) => setTitle(e.target.value)} />
+                        <Form.Control value={title} isInvalid={!title && error} onChange={(e) => setTitle(e.target.value)} />
                     </Form.Group>
                     <Form.Group className='mb-3'>
                         <Form.Label>Recipe Description</Form.Label>
-                        <Form.Control value={description} onChange={(e) => setDescription(e.target.value)} />
+                        <Form.Control value={description} isInvalid={!description && error} onChange={(e) => setDescription(e.target.value)} />
                     </Form.Group>
                     <Form.Group className='mb-3'>
                         <Form.Label>Image URL</Form.Label>
-                        <Form.Control value={image} onChange={(e) => setImage(e.target.value)} />
+                        <Form.Control value={image} isInvalid={!image && error} onChange={(e) => setImage(e.target.value)} />
                     </Form.Group>
                     <Button onClick={addRecipe}>Add Recipe</Button>
                 </Form>
